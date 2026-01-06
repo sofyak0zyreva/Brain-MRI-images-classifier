@@ -37,5 +37,5 @@ jobs:
             - name: Run Flake8
               run: flake8 . --exclude .venv --ignore=E501 # ignores line too long warning (conflicts with formatter)
 
-            - name: Run unit tests
+            - name: Run tests
               run: python -m pytest tests/ -v --cov=. --cov-fail-under=85
