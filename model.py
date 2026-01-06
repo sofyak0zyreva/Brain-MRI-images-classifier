@@ -19,8 +19,6 @@ def prepare_data(
             img = resize(img, (15, 15))
             data.append(img.flatten())
             labels.append(category_indx)
-    # data = np.asarray(data)
-    # labels = np.asarray(labels)
 
 
 input_dir = "images/Train"
