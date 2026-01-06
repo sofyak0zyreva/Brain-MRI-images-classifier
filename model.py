@@ -35,7 +35,7 @@ def get_accuracy(labels_test: np.ndarray, y_prediction: np.ndarray) -> None:
 def classify_tumor_dataset() -> None:
     """
     A function for performing classification on the given dataset.
-    Takes train images from `images/Train` directory, trains classifier on them, 
+    Takes train images from `images/Train` directory, trains classifier on them,
     then performs classification of test images set from `images/Validation`, computes accuracy
     and dumps result model to `model.p`
     """
@@ -76,6 +76,7 @@ def classify_tumor_dataset() -> None:
 
     with open("model.p", "wb") as f:
         pickle.dump(best_estimator, f)
+
 
 if __name__ == "__main__":
     classify_tumor_dataset()

@@ -21,4 +21,5 @@ def process_single_image(path: str) -> None:
 
     print("Prediction:", "Tumor" if prediction[0] == 0 else "Normal")
 
-#process_single_image("images/Validation/Tumor/Tumor (1).jpg")
+
+# process_single_image("images/Validation/Tumor/Tumor (1).jpg")
