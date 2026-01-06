@@ -12,6 +12,9 @@ from sklearn.metrics import accuracy_score  # type: ignore
 def prepare_data(
     input_dir: str, categories: List[str], data: List[np.ndarray], labels: List[int]
 ) -> None:
+    """
+    A function for uploading images from directories based on their category
+    """
     for category_indx, category in enumerate(categories):
         for file in os.listdir(os.path.join(input_dir, category)):
             img_path = os.path.join(input_dir, category, file)
@@ -21,41 +24,58 @@ def prepare_data(
             labels.append(category_indx)
 
 
-input_dir = "images/Train"
-categories = ["Tumor", "Normal"]
+def get_accuracy(labels_test: np.ndarray, y_prediction: np.ndarray) -> None:
+    """
+    A function for computing the accuracy of image classification
+    """
+    score = accuracy_score(labels_test, y_prediction)
+    print(f"{score * 100:.2f}% of samples correctly classified")
 
-data: List[np.ndarray] = []
-labels: List[int] = []
 
-prepare_data(input_dir, categories, data, labels)
+def classify_tumor_dataset() -> None:
+    """
+    A function for performing classification on the given dataset.
+    Takes train images from `images/Train` directory, trains classifier on them, 
+    then performs classification of test images set from `images/Validation`, computes accuracy
+    and dumps result model to `model.p`
+    """
+    input_dir = "images/Train"
+    categories = ["Tumor", "Normal"]
 
-test_input_dir = "images/Validation"
-test_categories = ["Tumor", "Normal"]
+    data: List[np.ndarray] = []
+    labels: List[int] = []
 
-test_data: List[np.ndarray] = []
-test_labels: List[int] = []
+    prepare_data(input_dir, categories, data, labels)
 
-prepare_data(test_input_dir, test_categories, test_data, test_labels)
+    test_input_dir = "images/Validation"
+    test_categories = ["Tumor", "Normal"]
 
-data_train = np.asarray(data)
-labels_train = np.asarray(labels)
-data_test = np.asarray(test_data)
-labels_test = np.asarray(test_labels)
+    test_data: List[np.ndarray] = []
+    test_labels: List[int] = []
 
-classifier = SVC()
-parameters = {
-    "gamma": [0.01, 0.001, 0.0001],
-    "C": [1, 10, 100, 1000],
-}
+    prepare_data(test_input_dir, test_categories, test_data, test_labels)
 
-grid_search = GridSearchCV(classifier, parameters)
-grid_search.fit(data_train, labels_train)
+    data_train = np.asarray(data)
+    labels_train = np.asarray(labels)
+    data_test = np.asarray(test_data)
+    labels_test = np.asarray(test_labels)
 
-best_estimator = grid_search.best_estimator_
-y_prediction = best_estimator.predict(data_test)
+    classifier = SVC()
+    parameters = {
+        "gamma": [0.01, 0.001, 0.0001],
+        "C": [1, 10, 100, 1000],
+    }
 
-score = accuracy_score(labels_test, y_prediction)
-print(f"{score * 100:.2f}% of samples correctly classified")
+    grid_search = GridSearchCV(classifier, parameters)
+    grid_search.fit(data_train, labels_train)
 
-with open("model.p", "wb") as f:
-    pickle.dump(best_estimator, f)
+    best_estimator = grid_search.best_estimator_
+    y_prediction = best_estimator.predict(data_test)
+
+    get_accuracy(labels_test, y_prediction)
+
+    with open("model.p", "wb") as f:
+        pickle.dump(best_estimator, f)
+
+if __name__ == "__main__":
+    classify_tumor_dataset()

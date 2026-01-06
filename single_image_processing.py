@@ -5,6 +5,9 @@ from skimage.transform import resize
 
 
 def process_single_image(path: str) -> None:
+    """
+    A function for making prediction for a single image based on pre-made model from `model.p` file
+    """
     with open("model.p", "rb") as f:
         model = pickle.load(f)
 
@@ -18,5 +21,4 @@ def process_single_image(path: str) -> None:
 
     print("Prediction:", "Tumor" if prediction[0] == 0 else "Normal")
 
-
-process_single_image("images/Validation/Tumor/Tumor (1).jpg")
+#process_single_image("images/Validation/Tumor/Tumor (1).jpg")
