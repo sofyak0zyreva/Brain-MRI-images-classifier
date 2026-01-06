@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import pickle
 from skimage.io import imread
 from skimage.transform import resize
 from sklearn.svm import SVC
@@ -52,3 +53,5 @@ y_prediction = best_estimator.predict(test_data)
 score = accuracy_score(y_prediction, test_labels)
 
 print(f"{score*100}% of samples correctly classified")
+
+pickle.dump(best_estimator, open('./model.p', 'wb'))
