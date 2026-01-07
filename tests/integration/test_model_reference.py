@@ -7,7 +7,7 @@ from pathlib import Path
 import sys
 import os
 import tempfile
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 from imageio import imwrite
 
 from model import (
@@ -246,7 +246,7 @@ class TestDataFlow:
                             width, height = img.size
                             assert width > 0 and height > 0
                             print(f"  {img_path.name}: {width}x{height}")
-                    except:
+                    except UnidentifiedImageError:
                         print("Could not parse an image in directory")
         else:
             pytest.skip("Could not found data")
