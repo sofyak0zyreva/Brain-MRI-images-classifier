@@ -41,6 +41,8 @@ pytest tests/ -v
 
 ## Docs
 
+View on [Brain-MRI-images-classifier](https://sofyak0zyreva.github.io/Brain-MRI-images-classifier/)
+
 ```bash
 cd docs
 make html
