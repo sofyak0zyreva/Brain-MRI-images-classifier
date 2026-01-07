@@ -1,3 +1,5 @@
+imageio
+pillow
 scikit-learn==1.8.0
 scikit-image==0.26.0
 
