@@ -1,4 +1,5 @@
 import pickle
+import sys
 import numpy as np
 from skimage.io import imread
 from skimage.transform import resize
@@ -22,4 +23,10 @@ def process_single_image(path: str) -> None:
     print("Prediction:", "Tumor" if prediction[0] == 0 else "Normal")
 
 
-# process_single_image("images/Validation/Tumor/Tumor (1).jpg")
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print(f"Usage: python3 {sys.argv[0]} <path_to_image>")
+        sys.exit(1)
+
+    image_path = sys.argv[1]
+    process_single_image(image_path)

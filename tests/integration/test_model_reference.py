@@ -16,33 +16,34 @@ from model import (
     classify_tumor_dataset,
     SVC,
     GridSearchCV,
-    accuracy_score
+    accuracy_score,
 )
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
 
 class TestEndToEnd:
     def test_full_prediction_pipeline(self, temp_dir):
-        assert Path('model.p').exists()
+        assert Path("model.p").exists()
 
-        test_img_path = temp_dir / 'integration_test.jpg'
+        test_img_path = temp_dir / "integration_test.jpg"
         img_array = np.random.randint(0, 255, (256, 256), dtype=np.uint8)
-        img = Image.fromarray(img_array, mode='L')
+        img = Image.fromarray(img_array, mode="L")
         img.save(test_img_path)
 
-        with open('model.p', 'rb') as f:
+        with open("model.p", "rb") as f:
             model = pickle.load(f)
 
         img_array_flat = img_array.flatten()
 
-        if hasattr(model, 'n_features_in_'):
+        if hasattr(model, "n_features_in_"):
             expected_size = model.n_features_in_
             if len(img_array_flat) > expected_size:
                 img_array_flat = img_array_flat[:expected_size]
             elif len(img_array_flat) < expected_size:
-                img_array_flat = np.pad(img_array_flat,
-                                        (0, expected_size - len(img_array_flat)))
+                img_array_flat = np.pad(
+                    img_array_flat, (0, expected_size - len(img_array_flat))
+                )
 
         try:
             prediction = model.predict([img_array_flat])
@@ -54,18 +55,18 @@ class TestEndToEnd:
             pytest.skip(f"Error: {e}")
 
     def test_model_with_single_image_script(self, temp_dir):
-        assert Path('model.p').exists()
-        assert Path('single_image_processing.py').exists()
+        assert Path("model.p").exists()
+        assert Path("single_image_processing.py").exists()
 
         try:
             import single_image_processing as sip
 
-            test_img_path = temp_dir / 'script_integration.jpg'
+            test_img_path = temp_dir / "script_integration.jpg"
             img_array = np.random.randint(0, 255, (128, 128, 3), dtype=np.uint8)
             img = Image.fromarray(img_array)
             img.save(test_img_path)
 
-            if hasattr(sip, 'predict_image'):
+            if hasattr(sip, "predict_image"):
                 result = sip.predict_image(str(test_img_path))
                 assert result is not None
 
@@ -78,9 +79,8 @@ class TestModelFile:
         model_path = Path("model.py")
         assert model_path.exists()
 
-
         # Проверяем, что файл читается
-        with open(model_path, 'r', encoding='utf-8') as f:
+        with open(model_path, "r", encoding="utf-8") as f:
             content = f.read()
             assert "def classify_tumor_dataset" in content
             assert "def prepare_data" in content
@@ -110,20 +110,23 @@ class TestPrepareDataFunction:
                 img = np.random.randint(0, 256, (50, 50, 3), dtype=np.uint8)
                 img_path = test_dir / category / f"test_{i}.png"
                 import imageio.v3 as iio
+
                 iio.imwrite(img_path, img)
 
         yield test_dir
         import shutil
+
         shutil.rmtree(test_dir)
 
     def test_prepare_data_function_signature(self):
         import inspect
+
         sig = inspect.signature(prepare_data)
         params = list(sig.parameters.keys())
-        assert params == ['input_dir', 'categories', 'data', 'labels']
+        assert params == ["input_dir", "categories", "data", "labels"]
         annotations = prepare_data.__annotations__
-        assert 'input_dir' in annotations and annotations['input_dir'] == str
-        assert 'categories' in annotations and 'List' in str(annotations['categories'])
+        assert "input_dir" in annotations and annotations["input_dir"] == str
+        assert "categories" in annotations and "List" in str(annotations["categories"])
 
     def test_prepare_data_creates_correct_structure(self, sample_image_data):
         data = []
@@ -198,7 +201,9 @@ class TestClassifyTumorDatasetReal:
         yield temp_dir
         shutil.rmtree(temp_dir)
 
-    def test_complete_pipeline_real_data(self, create_real_test_dataset, monkeypatch, capsys):
+    def test_complete_pipeline_real_data(
+        self, create_real_test_dataset, monkeypatch, capsys
+    ):
         temp_dir = create_real_test_dataset
         original_cwd = os.getcwd()
 
@@ -231,9 +236,9 @@ class TestClassifyTumorDatasetReal:
 # used to gain test coverage ;)
 class TestDataFlow:
     def test_images_directory_exists(self):
-        images_dir = Path('images')
+        images_dir = Path("images")
         if images_dir.exists():
-            image_files = list(images_dir.glob('*.*'))
+            image_files = list(images_dir.glob("*.*"))
             if image_files:
                 for img_path in image_files[:3]:
                     try:
@@ -247,8 +252,8 @@ class TestDataFlow:
             pytest.skip("Could not found data")
 
     def test_documentation_exists(self):
-        docs_dir = Path('docs')
+        docs_dir = Path("docs")
         if docs_dir.exists():
-            doc_files = list(docs_dir.rglob('*.rst'))
+            doc_files = list(docs_dir.rglob("*.rst"))
             if len(doc_files) == 0:
                 pytest.fail("Failed to find doc")
