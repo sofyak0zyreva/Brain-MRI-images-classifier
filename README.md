@@ -40,7 +40,8 @@ pytest tests/ -v
 ```
 
 ## Docs
-
+Docs are availible [here](https://sofyak0zyreva.github.io/Brain-MRI-images-classifier/)
+Or you can generate them locally:
 ```bash
 cd docs
 make html
